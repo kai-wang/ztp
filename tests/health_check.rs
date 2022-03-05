@@ -1,6 +1,6 @@
 use std::net::TcpListener;
-
-use tokio::sync::watch::error;
+use sqlx::{PgConnection, Connection, postgres::PgColumn};
+use ztp::configuration::get_configuration;
 
 #[tokio::test]
 async fn health_check_works() {
@@ -20,6 +20,11 @@ async fn health_check_works() {
 #[tokio::test]
 async fn subscribe_returns_a_200_for_valid_form_data() {
   let app_address = spawn_app();
+  let configuration = get_configuration().expect("fail to read the connection");
+  let connection_string = configuration.database.connection_string();
+  let connection = PgConnection::connect(&connection_string)
+        .await
+        .expect("failed to connect to the Postgres");
   let client = reqwest::Client::new();
 
   let body = "name=eric%20wang&email=eric_wang%40gmail.com";
@@ -71,7 +76,7 @@ fn spawn_app() -> String {
   let port = listener.local_addr().unwrap().port();
   println!("port is {:?}", &port);
 
-  let server = ztp::run(listener).expect("Failed to bind address");
+  let server = ztp::startup::run(listener).expect("Failed to bind address");
   let _ = tokio::spawn(server);
 
   format!("http://127.0.0.1:{}", port)
