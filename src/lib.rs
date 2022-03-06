@@ -1,6 +1,8 @@
+#![allow(clippy::toplevel_ref_arg)]
 pub mod configuration;
 pub mod routes;
 pub mod startup;
+pub mod telemetry;
 
 // use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer};
 // use actix_web::dev::Server;

@@ -3,6 +3,13 @@ use sqlx::{PgPool, PgConnection, Connection, Executor};
 use ztp::configuration::{get_configuration, DatabaseSettings};
 use ztp::startup::run;
 use uuid::Uuid;
+use ztp::telemetry::{get_subscriber, init_subscriber};
+use once_cell::sync::Lazy;
+
+static TRACING: Lazy<()> = Lazy::new(|| {
+  let subscriber = get_subscriber("test".into(), "debug".into());
+  init_subscriber(subscriber);
+});
 
 #[derive(Debug)]
 pub struct TestApp {
@@ -81,16 +88,16 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
 
 
 async fn spawn_app() -> TestApp {
+  Lazy::force(&TRACING);
+
   // Bind a random port;
   let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
   let port = listener.local_addr().unwrap().port();
   let address = format!("http://127.0.0.1:{}", port);
 
   let mut configuration = get_configuration().expect("Failed to read configurations.");
-
   // Randomise the database name to isolate the testing
   configuration.database.database_name = Uuid::new_v4().to_string();
-
   let connection_pool = configure_database(&configuration.database).await;
 
   let server = run(listener, connection_pool.clone()).expect("Failed to bind address");
