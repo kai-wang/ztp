@@ -8,7 +8,6 @@ pub mod telemetry;
 // use actix_web::dev::Server;
 // use std::net::TcpListener;
 
-
 // #[derive(serde::Deserialize)]
 // pub struct FormData {
 //   email: String,
