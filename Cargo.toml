@@ -30,7 +30,8 @@ features = [
   "postgres",
   "uuid",
   "chrono",
-  "migrate"
+  "migrate",
+  "offline"
 ]
 
 [dev-dependencies]
@@ -42,4 +43,4 @@ path = "src/lib.rs"
 
 [[bin]]
 path = "src/main.rs"
-name = "ztd"
+name = "ztp"
