@@ -87,6 +87,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
 }
 
 async fn spawn_app() -> TestApp {
+    // Make sure it is only initialized once
     Lazy::force(&TRACING);
 
     // Bind a random port;
