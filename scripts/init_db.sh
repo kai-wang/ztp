@@ -25,7 +25,7 @@ DB_NAME="${POSTGRES_DB:=newsletter}"
 # Check if a custom database port has been set, otherwise default to '5432'
 DB_PORT="${POSTGRES_PORT:=5432}"
 
-Launch docker
+# Launch docker
 if [[ -z "${SKIP_DOCKER}" ]]
 then
   docker run \
